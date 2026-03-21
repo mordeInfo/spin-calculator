@@ -7,7 +7,8 @@ let win
 function createWindow() {
   win = new BrowserWindow({
     width: 680,
-    height: 560,
+    height: 600,
+    minHeight: 600,
     resizable: false,
     frame: false,
     webPreferences: {
@@ -32,14 +33,12 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
 })
 
-ipcMain.on('quit-and-install', () => {
-  autoUpdater.quitAndInstall()
-})
-
+ipcMain.on('quit-and-install', () => { autoUpdater.quitAndInstall() })
 ipcMain.on('close-window', () => { win.close() })
 ipcMain.on('minimize-window', () => { win.minimize() })
 
 autoUpdater.on('update-available', () => {
+  win.setSize(680, 640)
   win.webContents.send('update-available')
 })
 
@@ -56,5 +55,5 @@ autoUpdater.setFeedURL({
   owner: 'mordeInfo',
   repo: 'spin-calculator',
   private: true,
-  token: process.env.GH_TOKEN
+  token: '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'
 })
