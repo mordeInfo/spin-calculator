@@ -10,15 +10,14 @@
     .window { width: 100vw; height: 100vh; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
     .titlebar { background: linear-gradient(180deg, #1e3a5f, #152d4a); padding: 10px 16px; display: flex; align-items: center; border-bottom: 1px solid #0d1f33; position: relative; -webkit-app-region: drag; flex-shrink: 0; }
     .traffic { display: flex; gap: 7px; position: absolute; left: 16px; -webkit-app-region: no-drag; }
-    .dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; }
-    .dot-r { background: radial-gradient(circle at 40% 35%, #ff6b6b, #c0392b); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
-    .dot-y { background: radial-gradient(circle at 40% 35%, #ffd93d, #e6ac00); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
-    .dot-g { background: radial-gradient(circle at 40% 35%, #6bcb77, #27ae60); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    .dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: bold; line-height: 1; }
+    .dot-r { background: radial-gradient(circle at 40% 35%, #ff6b6b, #c0392b); box-shadow: 0 1px 3px rgba(0,0,0,0.4); color: #7a0000; }
+    .dot-y { background: radial-gradient(circle at 40% 35%, #ffd93d, #e6ac00); box-shadow: 0 1px 3px rgba(0,0,0,0.4); color: #7a5500; }
     .title-text { width: 100%; text-align: center; font-size: 13px; font-weight: 500; color: #7fa8cc; letter-spacing: 0.04em; }
     .update-banner { display: none; background: linear-gradient(180deg, #1a3a5f, #122d4a); border-bottom: 1px solid #2a5a8f; padding: 10px 16px; text-align: center; font-size: 13px; color: #a8d4f5; flex-shrink: 0; }
     .update-banner.visible { display: block; }
     .update-btn { margin-left: 12px; padding: 3px 12px; background: #1D9E75; border: none; border-radius: 5px; color: white; font-size: 12px; cursor: pointer; font-family: inherit; }
-    .app { padding: 1.5rem; background: #0d1b2a; flex: 1; }
+    .app { padding: 1.5rem; background: #0d1b2a; flex: 1; display: flex; flex-direction: column; justify-content: center; }
     .card { background: linear-gradient(180deg, #182e44, #122334); border: 1px solid #1e3a52; border-bottom-color: #0d1f33; border-right-color: #0d1f33; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.3); }
     .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; }
     .field { display: flex; flex-direction: column; gap: 6px; }
@@ -43,9 +42,8 @@
 <div class="window">
   <div class="titlebar">
     <div class="traffic">
-      <div class="dot dot-r" id="btn-close"></div>
-      <div class="dot dot-y" id="btn-min"></div>
-      <div class="dot dot-g"></div>
+      <div class="dot dot-r" id="btn-close" title="Fermer">✕</div>
+      <div class="dot dot-y" id="btn-min" title="Réduire">—</div>
     </div>
     <div class="title-text">Spin EV Calculator</div>
   </div>
@@ -156,7 +154,6 @@ function installUpdate() { ipcRenderer.send('quit-and-install') }
 
 const ROOMS = {
   parions: {
-    name: 'Parions Sport',
     flashName: 'Flash',
     rake: {"0.25":0.08,"1":0.07,"2":0.07,"5":0.07,"10":0.07,"20":0.07,"50":0.07,"100":0.07,"200":0.06},
     buyins: ["0.25","1","2","5","10","20","50","100","200"],
@@ -173,7 +170,6 @@ const ROOMS = {
     }
   },
   winamax: {
-    name: 'Winamax',
     flashName: 'Nitro',
     rake: {"0.25":0.08,"0.5":0.08,"2":0.07,"5":0.07,"10":0.07,"25":0.07,"50":0.07,"250":0.07,"500":0.07},
     buyins: ["0.25","0.5","2","5","10","25","50","250","500"],
@@ -190,7 +186,6 @@ const ROOMS = {
     }
   },
   betclic: {
-    name: 'Betclic',
     flashName: 'Flash',
     rake: {"2":0.07},
     buyins: ["2"],
@@ -210,8 +205,7 @@ function onRoomChange() {
     o.value = b; o.textContent = b + '€';
     sel.appendChild(o);
   });
-  const formatSel = document.getElementById('format');
-  formatSel.options[1].text = room.flashName === 'Nitro' ? 'Nitro (200 jetons)' : 'Flash (200 jetons)';
+  document.getElementById('format').options[1].text = room.flashName === 'Nitro' ? 'Nitro (200 jetons)' : 'Flash (200 jetons)';
   calculate();
 }
 
@@ -257,7 +251,6 @@ function calculate() {
   const rake = rakebackPerSpin * totalSpins;
   const total = gains + rake;
   document.getElementById('r-wr').textContent = (winRate*100).toFixed(2).replace('.',',') + '%';
-  document.getElementById('r-wr').className = 'metric-value';
   const gbEl = document.getElementById('r-gb');
   gbEl.textContent = fmt(gains);
   gbEl.className = 'metric-value ' + (gains>=0?'pos':'neg');
