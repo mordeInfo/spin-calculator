@@ -7,94 +7,32 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1b2a; user-select: none; }
-
     .window { width: 100vw; height: 100vh; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
-
-    .titlebar {
-      background: linear-gradient(180deg, #1e3a5f, #152d4a);
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      border-bottom: 1px solid #0d1f33;
-      position: relative;
-      -webkit-app-region: drag;
-      flex-shrink: 0;
-    }
+    .titlebar { background: linear-gradient(180deg, #1e3a5f, #152d4a); padding: 10px 16px; display: flex; align-items: center; border-bottom: 1px solid #0d1f33; position: relative; -webkit-app-region: drag; flex-shrink: 0; }
     .traffic { display: flex; gap: 7px; position: absolute; left: 16px; -webkit-app-region: no-drag; }
     .dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; }
     .dot-r { background: radial-gradient(circle at 40% 35%, #ff6b6b, #c0392b); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
     .dot-y { background: radial-gradient(circle at 40% 35%, #ffd93d, #e6ac00); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
     .dot-g { background: radial-gradient(circle at 40% 35%, #6bcb77, #27ae60); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
     .title-text { width: 100%; text-align: center; font-size: 13px; font-weight: 500; color: #7fa8cc; letter-spacing: 0.04em; }
-
-    .update-banner {
-      display: none;
-      background: linear-gradient(180deg, #1a3a5f, #122d4a);
-      border-bottom: 1px solid #2a5a8f;
-      padding: 10px 16px;
-      text-align: center;
-      font-size: 13px;
-      color: #a8d4f5;
-      flex-shrink: 0;
-    }
+    .update-banner { display: none; background: linear-gradient(180deg, #1a3a5f, #122d4a); border-bottom: 1px solid #2a5a8f; padding: 10px 16px; text-align: center; font-size: 13px; color: #a8d4f5; flex-shrink: 0; }
     .update-banner.visible { display: block; }
-    .update-banner b { color: #e8f1f9; }
-    .update-btn {
-      margin-left: 12px;
-      padding: 3px 12px;
-      background: #1D9E75;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      font-size: 12px;
-      cursor: pointer;
-      font-family: inherit;
-    }
-
+    .update-btn { margin-left: 12px; padding: 3px 12px; background: #1D9E75; border: none; border-radius: 5px; color: white; font-size: 12px; cursor: pointer; font-family: inherit; }
     .app { padding: 1.5rem; background: #0d1b2a; flex: 1; }
-    .card {
-      background: linear-gradient(180deg, #182e44, #122334);
-      border: 1px solid #1e3a52;
-      border-bottom-color: #0d1f33;
-      border-right-color: #0d1f33;
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.3);
-    }
+    .card { background: linear-gradient(180deg, #182e44, #122334); border: 1px solid #1e3a52; border-bottom-color: #0d1f33; border-right-color: #0d1f33; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.3); }
     .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; }
     .field { display: flex; flex-direction: column; gap: 6px; }
     .field label { font-size: 12px; font-weight: 500; color: #7fa8cc; text-transform: uppercase; letter-spacing: 0.06em; }
-    select, input[type=number] {
-      width: 100%; height: 38px; padding: 0 10px; border-radius: 7px;
-      background: linear-gradient(180deg, #1e3a55, #243d57);
-      color: #e8f1f9; font-size: 14px; outline: none;
-      -webkit-appearance: none; appearance: none;
-      border: 1px solid #1a3550; border-bottom-color: #0d2035;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.05);
-      font-family: inherit;
-    }
-    select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237fa8cc' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer;
-    }
+    select, input[type=number] { width: 100%; height: 38px; padding: 0 10px; border-radius: 7px; background: linear-gradient(180deg, #1e3a55, #243d57); color: #e8f1f9; font-size: 14px; outline: none; -webkit-appearance: none; appearance: none; border: 1px solid #1a3550; border-bottom-color: #0d2035; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.05); font-family: inherit; }
+    select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237fa8cc' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer; }
     select option { background: #243d57; color: #e8f1f9; }
     input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { opacity: 0.3; }
     input[type=number]::placeholder { color: #4a6a85; }
-    input[type=number]:focus, select:focus {
-      border-color: #3a6a9a;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 0 0 2px rgba(58,106,154,0.25);
-    }
+    input[type=number]:focus, select:focus { border-color: #3a6a9a; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 0 0 2px rgba(58,106,154,0.25); }
     .divider { border: none; border-top: 1px solid #0d1f33; border-bottom: 1px solid rgba(255,255,255,0.04); margin: 1.25rem 0; }
     .proj-row { display: flex; align-items: flex-end; gap: 12px; }
     .results { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-    .metric {
-      background: linear-gradient(180deg, #c8dff0, #b8d0e5);
-      border: 1px solid #a0bdd4; border-bottom-color: #8aaec8;
-      border-radius: 8px; padding: 0.875rem 1rem;
-      display: flex; flex-direction: column; justify-content: space-between; min-height: 72px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.5);
-    }
+    .metric { background: linear-gradient(180deg, #c8dff0, #b8d0e5); border: 1px solid #a0bdd4; border-bottom-color: #8aaec8; border-radius: 8px; padding: 0.875rem 1rem; display: flex; flex-direction: column; justify-content: space-between; min-height: 72px; box-shadow: 0 3px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.5); }
     .metric-label { font-size: 11px; font-weight: 500; color: #1a3a55; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.3; height: 28px; display: flex; align-items: flex-start; }
     .metric-value { font-size: 20px; font-weight: 500; color: #0d1b2a; margin-top: auto; }
     .pos { color: #0a5e34; }
@@ -105,8 +43,8 @@
 <div class="window">
   <div class="titlebar">
     <div class="traffic">
-      <div class="dot dot-r" id="btn-close" title="Fermer"></div>
-      <div class="dot dot-y" id="btn-min" title="Réduire"></div>
+      <div class="dot dot-r" id="btn-close"></div>
+      <div class="dot dot-y" id="btn-min"></div>
       <div class="dot dot-g"></div>
     </div>
     <div class="title-text">Spin EV Calculator</div>
@@ -124,6 +62,7 @@
           <label>Room</label>
           <select id="room" onchange="onRoomChange()">
             <option value="parions">Parions Sport</option>
+            <option value="winamax">Winamax</option>
             <option value="betclic">Betclic</option>
           </select>
         </div>
@@ -206,24 +145,21 @@ ipcRenderer.on('update-available', () => {
   document.getElementById('update-banner').classList.add('visible')
   document.getElementById('update-msg').textContent = 'Une mise à jour est disponible, téléchargement en cours...'
 })
-
 ipcRenderer.on('download-progress', (event, percent) => {
-  document.getElementById('update-msg').textContent = `Téléchargement de la mise à jour : ${percent}%`
+  document.getElementById('update-msg').textContent = 'Téléchargement de la mise à jour : ' + percent + '%'
 })
-
 ipcRenderer.on('update-downloaded', () => {
   document.getElementById('update-msg').textContent = 'Mise à jour prête !'
   document.getElementById('update-btn').style.display = 'inline-block'
 })
-
-function installUpdate() {
-  ipcRenderer.send('quit-and-install')
-}
+function installUpdate() { ipcRenderer.send('quit-and-install') }
 
 const ROOMS = {
   parions: {
-    rake: {"0.25":0.08,"1":0.07,"2":0.07,"5":0.07,"10":0.07,"20":0.07,"50":0.07,"200":0.06},
-    buyins: ["0.25","1","2","5","10","20","50","200"],
+    name: 'Parions Sport',
+    flashName: 'Flash',
+    rake: {"0.25":0.08,"1":0.07,"2":0.07,"5":0.07,"10":0.07,"20":0.07,"50":0.07,"100":0.07,"200":0.06},
+    buyins: ["0.25","1","2","5","10","20","50","100","200"],
     dist: {
       "0.25":[{prob:0.00001,p1:100},{prob:0.00003,p1:50},{prob:0.00015,p1:10},{prob:0.0006,p1:5},{prob:0.005,p1:2},{prob:0.35179,p1:1},{prob:0.64242,p1:0.5}],
       "1":[{prob:0.00001,p1:750},{prob:0.00003,p1:150},{prob:0.0001,p1:75},{prob:0.0005,p1:15},{prob:0.003,p1:7.5},{prob:0.03,p1:5},{prob:0.13,p1:4},{prob:0.38128,p1:3},{prob:0.45508,p1:2}],
@@ -232,30 +168,50 @@ const ROOMS = {
       "10":[{prob:0.00001,p1:7500},{prob:0.00003,p1:1500},{prob:0.0001,p1:750},{prob:0.0005,p1:150},{prob:0.003,p1:75},{prob:0.03,p1:50},{prob:0.13,p1:40},{prob:0.38128,p1:30},{prob:0.45508,p1:20}],
       "20":[{prob:0.00001,p1:15000},{prob:0.00003,p1:3000},{prob:0.0001,p1:1500},{prob:0.0005,p1:300},{prob:0.003,p1:150},{prob:0.03,p1:100},{prob:0.13,p1:80},{prob:0.38128,p1:60},{prob:0.45508,p1:40}],
       "50":[{prob:0.00001,p1:37500},{prob:0.00003,p1:7500},{prob:0.0001,p1:3750},{prob:0.0005,p1:750},{prob:0.003,p1:375},{prob:0.03,p1:250},{prob:0.13,p1:200},{prob:0.38128,p1:150},{prob:0.45508,p1:100}],
+      "100":[{prob:0.00001,p1:75000},{prob:0.00003,p1:15000},{prob:0.0001,p1:7500},{prob:0.0005,p1:1500},{prob:0.003,p1:750},{prob:0.03,p1:500},{prob:0.13,p1:400},{prob:0.38128,p1:300},{prob:0.45508,p1:200}],
       "200":[{prob:0.00001,p1:375000},{prob:0.00005,p1:15000},{prob:0.00015,p1:7500},{prob:0.00075,p1:3750},{prob:0.0075,p1:1500},{prob:0.04,p1:1000},{prob:0.13412,p1:800},{prob:0.31743,p1:600},{prob:0.49999,p1:400}]
     }
   },
+  winamax: {
+    name: 'Winamax',
+    flashName: 'Nitro',
+    rake: {"0.25":0.08,"0.5":0.08,"2":0.07,"5":0.07,"10":0.07,"25":0.07,"50":0.07,"250":0.07,"500":0.07},
+    buyins: ["0.25","0.5","2","5","10","25","50","250","500"],
+    dist: {
+      "0.25":(function(){const f=[4,20,200,1000,15000,40000,80000,232448,631328],p=[2000,200,20,10,2.5,1.25,1,0.75,0.5],t=1000000;return f.map((x,i)=>({prob:x/t,p1:p[i]}))})(),
+      "0.5":(function(){const f=[4,20,200,1000,15000,40000,80000,232448,631328],p=[4000,400,40,20,5,2.5,2,1.5,1],t=1000000;return f.map((x,i)=>({prob:x/t,p1:p[i]}))})(),
+      "2":(function(){const f=[1,100,2000,9000,150000,400000,800000,2672202,5966697],p=[800000,1600,160,80,20,10,8,6,4],t=10000000;return f.map((x,i)=>({prob:x/t,p1:p[i]}))})(),
+      "5":(function(){const f=[2,100,2000,10000,150000,400000,825000,2674204,5938694],p=[800000,4000,400,200,50,25,20,15,10],t=10000000;return f.map((x,i)=>({prob:x/t,p1:p[i]}))})(),
+      "10":(function(){const f=[4,100,2000,10000,150000,400000,825000,2674208,5938688],p=[800000,8000,800,400,100,50,40,30,20],t=10000000;return f.map((x,i)=>({prob:x/t,p1:p[i]}))})(),
+      "25":(function(){const f=[10,100,2000,10000,150000,400000,825000,2674220,5938670],p=[800000,20000,2000,1000,250,125,100,75,50],t=10000000;return f.map((x,i)=>({prob:x/t,p1:p[i]}))})(),
+      "50":(function(){const f=[20,100,2000,10000,150000,400000,825000,2674240,5938640],p=[800000,40000,4000,2000,500,250,200,150,100],t=10000000;return f.map((x,i)=>({prob:x/t,p1:p[i]}))})(),
+      "250":(function(){const f=[4,25,100,1000,17000,50000,80000,260258,591613],p=[800000,80000,20000,10000,2500,1250,1000,750,500],t=1000000;return f.map((x,i)=>({prob:x/t,p1:p[i]}))})(),
+      "500":(function(){const f=[4,25,100,1000,17000,50000,80000,260258,591613],p=[1600000,160000,40000,20000,5000,2500,2000,1500,1000],t=1000000;return f.map((x,i)=>({prob:x/t,p1:p[i]}))})()
+    }
+  },
   betclic: {
+    name: 'Betclic',
+    flashName: 'Flash',
     rake: {"2":0.07},
     buyins: ["2"],
     dist: {
-      "2":(function(){
-        const f=[5,100,500,5000,40000,130000,346210,478185],m=[1000,100,20,10,5,4,3,2],p=[75,75,75,100,100,100,100,100],t=f.reduce((a,b)=>a+b,0);
-        return m.map((x,i)=>({prob:f[i]/t,p1:2*x*(p[i]/100)}));
-      })()
+      "2":(function(){const f=[5,100,500,5000,40000,130000,346210,478185],m=[1000,100,20,10,5,4,3,2],p=[75,75,75,100,100,100,100,100],t=f.reduce((a,b)=>a+b,0);return m.map((x,i)=>({prob:f[i]/t,p1:2*x*(p[i]/100)}));})()
     }
   }
 };
 
 function onRoomChange() {
   const r = document.getElementById('room').value;
+  const room = ROOMS[r];
   const sel = document.getElementById('buyin');
   sel.innerHTML = '';
-  ROOMS[r].buyins.forEach(b => {
+  room.buyins.forEach(b => {
     const o = document.createElement('option');
     o.value = b; o.textContent = b + '€';
     sel.appendChild(o);
   });
+  const formatSel = document.getElementById('format');
+  formatSel.options[1].text = room.flashName === 'Nitro' ? 'Nitro (200 jetons)' : 'Flash (200 jetons)';
   calculate();
 }
 
