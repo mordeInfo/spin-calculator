@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spin EV Calculator</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d1b2a; user-select: none; }
+
+    .window { width: 100vw; height: 100vh; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+
+    .titlebar {
+      background: linear-gradient(180deg, #1e3a5f, #152d4a);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #0d1f33;
+      position: relative;
+      -webkit-app-region: drag;
+      flex-shrink: 0;
+    }
+    .traffic { display: flex; gap: 7px; position: absolute; left: 16px; -webkit-app-region: no-drag; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; }
+    .dot-r { background: radial-gradient(circle at 40% 35%, #ff6b6b, #c0392b); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    .dot-y { background: radial-gradient(circle at 40% 35%, #ffd93d, #e6ac00); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    .dot-g { background: radial-gradient(circle at 40% 35%, #6bcb77, #27ae60); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    .title-text { width: 100%; text-align: center; font-size: 13px; font-weight: 500; color: #7fa8cc; letter-spacing: 0.04em; }
+
+    .app { padding: 1.5rem; background: #0d1b2a; flex: 1; }
+
+    .card {
+      background: linear-gradient(180deg, #182e44, #122334);
+      border: 1px solid #1e3a52;
+      border-bottom-color: #0d1f33;
+      border-right-color: #0d1f33;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 12px; font-weight: 500; color: #7fa8cc; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    select, input[type=number] {
+      width: 100%;
+      height: 38px;
+      padding: 0 10px;
+      border-radius: 7px;
+      background: linear-gradient(180deg, #1e3a55, #243d57);
+      color: #e8f1f9;
+      font-size: 14px;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      border: 1px solid #1a3550;
+      border-bottom-color: #0d2035;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.05);
+      font-family: inherit;
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237fa8cc' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+      cursor: pointer;
+    }
+    select option { background: #243d57; color: #e8f1f9; }
+    input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { opacity: 0.3; }
+    input[type=number]::placeholder { color: #4a6a85; }
+    input[type=number]:focus, select:focus {
+      border-color: #3a6a9a;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 0 0 2px rgba(58,106,154,0.25);
+    }
+
+    .divider { border: none; border-top: 1px solid #0d1f33; border-bottom: 1px solid rgba(255,255,255,0.04); margin: 1.25rem 0; }
+
+    .proj-row { display: flex; align-items: flex-end; gap: 12px; }
+
+    .results { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .metric {
+      background: linear-gradient(180deg, #c8dff0, #b8d0e5);
+      border: 1px solid #a0bdd4;
+      border-bottom-color: #8aaec8;
+      border-radius: 8px;
+      padding: 0.875rem 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 72px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.5);
+    }
+    .metric-label { font-size: 11px; font-weight: 500; color: #1a3a55; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.3; height: 28px; display: flex; align-items: flex-start; }
+    .metric-value { font-size: 20px; font-weight: 500; color: #0d1b2a; margin-top: auto; }
+    .pos { color: #0a5e34; }
+    .neg { color: #8b2000; }
+  </style>
+</head>
+<body>
+<div class="window">
+  <div class="titlebar">
+    <div class="traffic">
+      <div class="dot dot-r" id="btn-close" title="Fermer"></div>
+      <div class="dot dot-y" id="btn-min" title="Réduire"></div>
+      <div class="dot dot-g" id="btn-max" title="Agrandir"></div>
+    </div>
+    <div class="title-text">Spin EV Calculator</div>
+  </div>
+
+  <div class="app">
+    <div class="card">
+      <div class="row">
+        <div class="field">
+          <label>Room</label>
+          <select id="room" onchange="onRoomChange()">
+            <option value="parions">Parions Sport</option>
+            <option value="betclic">Betclic</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Format</label>
+          <select id="format" onchange="calculate()">
+            <option value="classique">Classique (500 jetons)</option>
+            <option value="flash">Flash (200 jetons)</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Buy-in</label>
+          <select id="buyin" onchange="calculate()"></select>
+        </div>
+        <div class="field">
+          <label>CEV</label>
+          <input type="number" id="cev" value="90" step="1" oninput="calculate()">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Rakeback (%)</label>
+          <input type="number" id="rakepct" placeholder="0" min="0" max="100" step="0.5" oninput="calculate()">
+        </div>
+        <div class="field" style="opacity:0;pointer-events:none"></div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="proj-row">
+        <div class="field">
+          <label>Projection</label>
+          <select id="proj-mode" onchange="onProjModeChange()">
+            <option value="spins">Par nombre de spins</option>
+            <option value="horaire">Taux horaire</option>
+          </select>
+        </div>
+        <div class="field" id="field-spins">
+          <label>Nombre de spins</label>
+          <input type="number" id="nb-spins" value="1000" min="1" step="100" oninput="calculate()">
+        </div>
+        <div class="field" id="field-sph" style="display:none">
+          <label>Spins / heure</label>
+          <input type="number" id="sph" value="20" min="1" oninput="calculate()">
+        </div>
+        <div class="field" id="field-nbh" style="display:none">
+          <label>Heures</label>
+          <input type="number" id="nbh" value="10" min="1" oninput="calculate()">
+        </div>
+      </div>
+    </div>
+
+    <div class="results">
+      <div class="metric">
+        <div class="metric-label">Taux de victoire</div>
+        <div class="metric-value" id="r-wr">—</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Gains bruts</div>
+        <div class="metric-value" id="r-gb">—</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Rakeback</div>
+        <div class="metric-value" id="r-rb">—</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Total net</div>
+        <div class="metric-value" id="r-total">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const { ipcRenderer } = require('electron')
+const { app, getCurrentWindow } = require('@electron/remote') 
+
+const win = require('electron').remote ? require('electron').remote.getCurrentWindow() : null
+
+document.getElementById('btn-close').addEventListener('click', () => { if(win) win.close(); else window.close(); })
+document.getElementById('btn-min').addEventListener('click', () => { if(win) win.minimize(); })
+document.getElementById('btn-max').addEventListener('click', () => { if(win) { win.isMaximized() ? win.unmaximize() : win.maximize(); } })
+
+const ROOMS = {
+  parions: {
+    rake: {"0.25":0.08,"1":0.07,"2":0.07,"5":0.07,"10":0.07,"20":0.07,"50":0.07,"200":0.06},
+    buyins: ["0.25","1","2","5","10","20","50","200"],
+    dist: {
+      "0.25":[{prob:0.00001,p1:100},{prob:0.00003,p1:50},{prob:0.00015,p1:10},{prob:0.0006,p1:5},{prob:0.005,p1:2},{prob:0.35179,p1:1},{prob:0.64242,p1:0.5}],
+      "1":[{prob:0.00001,p1:750},{prob:0.00003,p1:150},{prob:0.0001,p1:75},{prob:0.0005,p1:15},{prob:0.003,p1:7.5},{prob:0.03,p1:5},{prob:0.13,p1:4},{prob:0.38128,p1:3},{prob:0.45508,p1:2}],
+      "2":[{prob:0.00001,p1:1500},{prob:0.00003,p1:300},{prob:0.0001,p1:150},{prob:0.0005,p1:30},{prob:0.003,p1:15},{prob:0.03,p1:10},{prob:0.13,p1:8},{prob:0.38128,p1:6},{prob:0.45508,p1:4}],
+      "5":[{prob:0.00001,p1:3750},{prob:0.00003,p1:750},{prob:0.0001,p1:375},{prob:0.0005,p1:75},{prob:0.003,p1:37.5},{prob:0.03,p1:25},{prob:0.13,p1:20},{prob:0.38128,p1:15},{prob:0.45508,p1:10}],
+      "10":[{prob:0.00001,p1:7500},{prob:0.00003,p1:1500},{prob:0.0001,p1:750},{prob:0.0005,p1:150},{prob:0.003,p1:75},{prob:0.03,p1:50},{prob:0.13,p1:40},{prob:0.38128,p1:30},{prob:0.45508,p1:20}],
+      "20":[{prob:0.00001,p1:15000},{prob:0.00003,p1:3000},{prob:0.0001,p1:1500},{prob:0.0005,p1:300},{prob:0.003,p1:150},{prob:0.03,p1:100},{prob:0.13,p1:80},{prob:0.38128,p1:60},{prob:0.45508,p1:40}],
+      "50":[{prob:0.00001,p1:37500},{prob:0.00003,p1:7500},{prob:0.0001,p1:3750},{prob:0.0005,p1:750},{prob:0.003,p1:375},{prob:0.03,p1:250},{prob:0.13,p1:200},{prob:0.38128,p1:150},{prob:0.45508,p1:100}],
+      "200":[{prob:0.00001,p1:375000},{prob:0.00005,p1:15000},{prob:0.00015,p1:7500},{prob:0.00075,p1:3750},{prob:0.0075,p1:1500},{prob:0.04,p1:1000},{prob:0.13412,p1:800},{prob:0.31743,p1:600},{prob:0.49999,p1:400}]
+    }
+  },
+  betclic: {
+    rake: {"2":0.07},
+    buyins: ["2"],
+    dist: {
+      "2":(function(){
+        const f=[5,100,500,5000,40000,130000,346210,478185],m=[1000,100,20,10,5,4,3,2],p=[75,75,75,100,100,100,100,100],t=f.reduce((a,b)=>a+b,0);
+        return m.map((x,i)=>({prob:f[i]/t,p1:2*x*(p[i]/100)}));
+      })()
+    }
+  }
+};
+
+function onRoomChange() {
+  const r = document.getElementById('room').value;
+  const sel = document.getElementById('buyin');
+  sel.innerHTML = '';
+  ROOMS[r].buyins.forEach(b => {
+    const o = document.createElement('option');
+    o.value = b; o.textContent = b + '€';
+    sel.appendChild(o);
+  });
+  calculate();
+}
+
+function onProjModeChange() {
+  const m = document.getElementById('proj-mode').value;
+  document.getElementById('field-spins').style.display = m==='spins' ? 'flex' : 'none';
+  document.getElementById('field-sph').style.display = m==='horaire' ? 'flex' : 'none';
+  document.getElementById('field-nbh').style.display = m==='horaire' ? 'flex' : 'none';
+  calculate();
+}
+
+function fmt(v) {
+  const sign = v >= 0 ? '+' : '-';
+  return sign + Math.abs(v).toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + '€';
+}
+
+function calculate() {
+  const roomKey = document.getElementById('room').value;
+  const buyin = document.getElementById('buyin').value;
+  const cev = parseFloat(document.getElementById('cev').value) || 0;
+  const rakePct = (parseFloat(document.getElementById('rakepct').value) || 0) / 100;
+  const format = document.getElementById('format').value;
+
+  const startChips = format === 'classique' ? 500 : 200;
+  const totalChips = format === 'classique' ? 1500 : 600;
+  const winRate = (startChips + cev) / totalChips;
+
+  const room = ROOMS[roomKey];
+  const dist = room.dist[buyin];
+  const rakeRoom = room.rake[buyin] || 0.07;
+  const buyinVal = parseFloat(buyin);
+  if (!dist) return;
+
+  let evSpin = 0;
+  for (const d of dist) evSpin += d.prob * winRate * d.p1;
+  evSpin -= buyinVal;
+
+  const rakebackPerSpin = buyinVal * rakeRoom * rakePct;
+
+  const mode = document.getElementById('proj-mode').value;
+  let totalSpins;
+  if (mode === 'spins') {
+    totalSpins = parseInt(document.getElementById('nb-spins').value) || 1000;
+  } else {
+    totalSpins = (parseInt(document.getElementById('sph').value)||20) * (parseInt(document.getElementById('nbh').value)||10);
+  }
+
+  const gains = evSpin * totalSpins;
+  const rake = rakebackPerSpin * totalSpins;
+  const total = gains + rake;
+
+  document.getElementById('r-wr').textContent = (winRate*100).toFixed(2).replace('.',',') + '%';
+  document.getElementById('r-wr').className = 'metric-value';
+
+  const gbEl = document.getElementById('r-gb');
+  gbEl.textContent = fmt(gains);
+  gbEl.className = 'metric-value ' + (gains>=0?'pos':'neg');
+
+  const rbEl = document.getElementById('r-rb');
+  rbEl.textContent = rakePct > 0 ? fmt(rake) : '—';
+  rbEl.className = 'metric-value ' + (rakePct>0?'pos':'');
+
+  const totEl = document.getElementById('r-total');
+  totEl.textContent = fmt(total);
+  totEl.className = 'metric-value ' + (total>=0?'pos':'neg');
+}
+
+onRoomChange();
+</script>
+</body>
+</html>
