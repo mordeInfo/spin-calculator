@@ -1,6 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const { autoUpdater } = require('electron-updater')
-const path = require('path')
 
 let win
 
@@ -53,7 +52,5 @@ autoUpdater.on('update-downloaded', () => {
 autoUpdater.setFeedURL({
   provider: 'github',
   owner: 'mordeInfo',
-  repo: 'spin-calculator',
-  private: true,
-  token: process.env.GH_TOKEN
+  repo: 'spin-calculator'
 })

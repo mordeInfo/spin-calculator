@@ -1,6 +1,6 @@
 {
   "name": "spin-ev-calculator",
-  "version": "1.0.4",
+  "version": "1.0.0",
   "description": "Spin EV Calculator",
   "main": "main.js",
   "scripts": {
