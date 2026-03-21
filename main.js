@@ -55,5 +55,5 @@ autoUpdater.setFeedURL({
   owner: 'mordeInfo',
   repo: 'spin-calculator',
   private: true,
-  token: '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'
+  token: process.env.GH_TOKEN
 })
