@@ -49,6 +49,8 @@ autoUpdater.on('update-downloaded', () => {
   win.webContents.send('update-downloaded')
 })
 
+autoUpdater.autoDownload = true
+
 autoUpdater.setFeedURL({
   provider: 'github',
   owner: 'mordeInfo',
