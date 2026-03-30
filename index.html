@@ -354,8 +354,9 @@ const ROOMS = {
     buyins: { classique: ["1","2","5","10","25","50","100","250"], flash: ["0.25","1","2","5","10","25","50","100","250"] },
     dist: (function(){
       function makeDist(bi) {
-        return [
-          {mult:2500, prob:1/100000,     p1:bi*2500*0.80, p2:bi*2500*0.12, p3:bi*2500*0.08},
+  const topMult = bi === 250 ? 4000 : 2500;
+  return [
+    {mult:topMult, prob:1/100000, p1:bi*topMult*0.80, p2:bi*topMult*0.12, p3:bi*topMult*0.08},
           {mult:100,  prob:5/100000,     p1:bi*100*0.80,  p2:bi*100*0.12,  p3:bi*100*0.08},
           {mult:10,   prob:1000/100000,  p1:bi*10*0.80,   p2:bi*10*0.10,   p3:bi*10*0.10},
           {mult:5,    prob:3500/100000,  p1:bi*5,  p2:0, p3:0},
