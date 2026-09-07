@@ -6,9 +6,9 @@ let win
 function createWindow() {
   win = new BrowserWindow({
     width: 680,
-    height: 600,
+    height: 680,
     minHeight: 600,
-    resizable: false,
+    resizable: true,
     frame: false,
     webPreferences: {
       nodeIntegration: true,
@@ -37,7 +37,7 @@ ipcMain.on('close-window', () => { win.close() })
 ipcMain.on('minimize-window', () => { win.minimize() })
 
 autoUpdater.on('update-available', () => {
-  win.setSize(680, 640)
+  win.setSize(680, 720)
   win.webContents.send('update-available')
 })
 
